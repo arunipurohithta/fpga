@@ -1,66 +1,40 @@
 1. Project Overview
-
 This project implements an I²C address translator using an FPGA. Its main goal is to let a device with a fixed I²C address coexist with other devices that might have the same address on the same bus.
-
 Key points:
-
 FPGA acts as an I²C slave to the master and I²C master to the target device.
-
 Translates one device’s address at a time.
-
 Works with standard I²C speeds (100 kHz and 400 kHz).
-
 Designed using FPGA-friendly logic like combinational blocks, FSMs, and shift registers.
-
 2. How It Works
-
 The FPGA sits between the I²C master and the target device.
-
 It monitors the master’s address and replaces it with the device’s real address if needed.
-
 All read/write data is passed without change.
-
 Conceptual Diagram:
-
 I²C Master  --->  FPGA Address Translator  --->  Target Device
   SDA, SCL           Translating Addr           SDA, SCL
 
 3. Logic / Operation
-
 The core logic is simple:
-
 always @(*) begin
   if(master_addr == special_addr)
     fpga_addr = device_addr;
   else
     fpga_addr = master_addr;
 end
-
-
 Optional FSM can be added for multi-byte transactions, where the FPGA tracks start, address, data, and stop stages.
 
 4. Address Translation
-
 The FPGA checks the master’s address:
-
 Matches the special address? → translate it to the target device’s address.
-
 Otherwise? → pass the master’s address unchanged.
-
 Can be made runtime-configurable using a config_addr input, so you can change which address gets translated without modifying the code.
 
 5. Simulation
-
 Tested with two devices on EDA Playground.
-
 Verified that:
-
 If master address ≠ target → FPGA passes it unchanged.
-
 If master address = target → FPGA outputs the translated address.
-
 Sample Output from Simulation:
-
 time=0  master=48  device=48  fpga_out=48
 time=10 master=48  device=48  fpga_out=48
 time=20 master=49  device=48  fpga_out=48
@@ -77,15 +51,9 @@ IO Pins	14	200	7%
 BRAM	0	20	0%
 Max Frequency	400 MHz	-	-
 7. Challenges
-
 Simulating multiple devices on the I²C bus correctly.
-
 Making sure timing stays within standard I²C limits (100/400 kHz).
-
 Designing it in a way that can easily be extended for multiple devices or multi-byte transactions.
-
 8. Bonus Features 
-
 Runtime-configurable translation: Change the address to translate on the fly using a register input.
-
-Multi-byte support: Track data bytes with an FSM while only modifying the address byte.
+Multi-byte support: Track data bytes with an FSM while only modifying the address byt
