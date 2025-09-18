@@ -1,0 +1,13 @@
+module i2c_addr_translator(master_addr,device_addr,fpga_addr);
+  input [6:0] master_addr;
+  input [6:0] device_addr;
+  output reg [6:0] fpga_addr;
+  always@(*)
+    begin 
+      if(master_addr==7'h49)
+        fpga_addr=device_addr;
+      else
+        fpga_addr=master_addr;
+    end
+endmodule
+  

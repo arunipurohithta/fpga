@@ -1,0 +1,27 @@
+module i2c_addr_translator_tb();
+  reg [6:0] m_addr;
+  reg [6:0] d_addr;
+  wire [6:0] f_addr;
+  integer i;
+  i2c_addr_translator dut(.master_addr(m_addr),.device_addr(d_addr),.fpga_addr(f_addr));
+  initial
+    begin
+      d_addr=7'h48;
+      m_addr=7'h48;
+    end
+  initial 
+    begin
+      for(i=0;i<3;i=i+1)
+        begin
+          case(i)
+            0:m_addr=7'h48;
+            1:m_addr=7'h49;
+            2:m_addr=7'h50;
+          endcase
+          #10;
+        end
+    end
+  initial
+    $monitor("time=%0t master=%h device=%h fpga_out=%h" ,$time,m_addr,d_addr ,f_addr);
+  initial #50 $finish;
+endmodule
